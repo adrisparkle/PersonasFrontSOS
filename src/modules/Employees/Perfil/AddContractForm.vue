@@ -1,7 +1,6 @@
 <template>
-  <div>
+  <div v-if="!isFetching">
       <div class="panel-body">
-
         <div class="row">
           <div class="form-group col-md-5">
             <label>Dependencia</label>
@@ -126,7 +125,7 @@
             <small v-if="formError.StartDate.active" class="form-text text-muted text-danger">{{formError.StartDate.message}}</small>
           </div>
 
-          <div v-if="showEndDate" class="form-group col-md-4  col-md-offset-1">
+          <div v-if="showEndDate" class="form-group col-md-4">
             <label>Fecha Fin</label>
             <datepicker :typeable="false"
                         :bootstrap-styling="true"
@@ -135,11 +134,23 @@
                         placeholder="Fecha Finalizacion"
                         v-model="contract.EndDate">
             </datepicker>
-            <small v-if="formError.EndDate.active" class="form-text text-muted text-danger">{{formError.EndDate.message}}</small>
+            <small v-if="formError.EndDateNombramiento.active" class="form-text text-muted text-danger">{{formError.EndDate.message}}</small>
           </div>
+
+          <div v-if="isDesignated" class="form-group col-md-4" readonly>
+            <label>Fecha Fin Nombramiento</label>
+            <datepicker :typeable="false"
+                        :bootstrap-styling="true"
+                        :format="format" :language="es"
+                        :initialView="initialview"
+                        placeholder="Fecha Fin Nombramiento"
+                        v-model="contract.EndDateNombramiento">
+            </datepicker>
+            <small v-if="formError.EndDateNombramiento.active" class="form-text text-muted text-danger">{{formError.EndDateNombramiento.message}}</small>
+          </div>
+
         </div>
       </div>
-
       <!--button class="btn btn-success btn-block" @click="send()">Guardar</button-->
 
       <button class="btn btn-danger" @click="clearFormData()">Cancelar</button>
@@ -177,14 +188,15 @@
     },
     watch: {
       possitionWath: function (newval, oldval) {
-        if (newval !== null /* && this.ContractId === -1 */) {
-          console.log(newval)
-          let pos = this.FindPositionByCode(newval)
+        if (newval !== null /* && this.ContractId === -1 */) { // esta condición está bien suponiendo que no hay valores de entrada, no siempre es así
+          let pos = null
+          pos = this.FindPositionByCode(newval)
           console.log(pos)
           if (pos.DefaultLinkage !== null) {
             this.contract.Linkage = pos.DefaultLinkage
             this.disableLinkageSelectbox = true
           } else {
+            console.log('default linkage is null')
             this.disableLinkageSelectbox = false
             this.contract.Linkage = null
           }
@@ -195,20 +207,28 @@
           }
           if (pos.IsDesignated) {
             this.isDesignated = true
+            this.contract.EndDateNombramiento = this.contract.EndDate
           } else {
             this.isDesignated = false
             this.contract.ComentariosDesignacion = null
             this.contract.NumDesignacion = null
+            this.contract.EndDateNombramiento = null
           }
         }
       },
       ContractIdWatch: function () {
         this.init()
+      },
+      ContractEndDateWatch: function () {
+        if (this.isDesignated) {
+          this.contract.EndDateNombramiento = this.contract.EndDate
+        }
       }
     },
     data () {
       return {
         // date picker ---
+        isFetching: true,
         disableLinkageSelectbox: false,
         canEdit: false,
         es: es,
@@ -293,6 +313,10 @@
           Comunicado: {
             active: false,
             message: ''
+          },
+          EndDateNombramiento: {
+            active: false,
+            message: ''
           }
         },
         DepencencySelect: {
@@ -336,6 +360,11 @@
         get () {
           return this.ContractId
         }
+      },
+      ContractEndDateWatch: {
+        get () {
+          return this.contract.EndDate
+        }
       }
     },
     methods: {
@@ -375,8 +404,12 @@
         this.formError.Linkage.active = this.isEmptyBlanckOrNull(this.contract.Linkage)
         this.formError.StartDate.active = this.isEmptyBlanckOrNull(this.contract.StartDate)
         this.formError.EndDate.active = this.showEndDate && this.isEmptyBlanckOrNull(this.contract.StartDate) || Date.parse(this.contract.EndDate) < Date.parse(this.contract.StartDate)
+        this.formError.EndDateNombramiento.active = this.isDesignated && Date.parse(this.contract.EndDateNombramiento) < Date.parse(this.contract.EndDate)
         if (Date.parse(this.contract.EndDate) < Date.parse(this.contract.StartDate)) {
           this.formError.EndDate.message = '*Esta fecha no puede ser menor a la fecha Inicio'
+        }
+        if (Date.parse(this.contract.EndDateNombramiento) < Date.parse(this.contract.EndDate)) { // condición de validación
+          this.formError.EndDateNombramiento.message = 'Esta fecha no puede ser menor a la fecha fin del contrato'
         }
         if (this.isDesignated) {
           this.formError.NumGestion.active = this.isEmptyBlanckOrNull(this.contract.NumGestion)
@@ -396,6 +429,7 @@
       send () {
         if (this.ContractId === -1) {
           this.post()
+          console.log('EndDateNombramiento: ' + this.formError.EndDateNombramiento.active)
         } else {
           this.put()
         }
@@ -524,6 +558,7 @@
         let op = this.PositionsOptions
         axios.get('positions/')
           .then(response => {
+            console.log(response.data)
             this.PositionSelect.values = response.data
             response.data.forEach(function (element) {
               // console.log(element)
@@ -531,6 +566,9 @@
             })
           })
           .catch(error => console.log(error))
+        this.isFetching = false
+        console.log(this.PositionsOptions)
+        console.log('isFetching: ' + this.isFetching)
       },
       init () {
         if (this.ContractId === -1) {
@@ -549,12 +587,14 @@
             NumGestion: null,
             Seguimiento: null,
             Respaldo: null,
-            Comunicado: null
+            Comunicado: null,
+            EndDateNombramiento: null
           }
         } else {
           axios.get('contract/' + this.ContractId)
             .then(response => {
               this.contract = response.data
+              console.log(response.data)
               this.hasContract = true
             })
             .catch(this.hasContract = false)

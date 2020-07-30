@@ -38,6 +38,9 @@
         action: {
           type: String,
           default: ''
+        },
+        Positions: {
+          values: []
         }
       },
       data () {
@@ -55,6 +58,10 @@
         Historia () {
           this.State = 'HISTORIA'
         } */
+      },
+      created () {
+        console.log('desde bottom')
+        console.log(this.Positions)
       }
     }
 </script>

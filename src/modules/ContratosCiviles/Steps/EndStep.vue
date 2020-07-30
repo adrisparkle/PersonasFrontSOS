@@ -141,6 +141,9 @@
           })
           .catch(error => console.log(error))
       },
+      ShowDate () {
+        alert(this.date.toLocaleString())
+      },
       SAPVoucher () {
         if (this.date !== null) {
           this.inprogress = true

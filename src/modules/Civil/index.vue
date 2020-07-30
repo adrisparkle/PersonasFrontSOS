@@ -9,7 +9,7 @@
           <div class="row">
             <div class="col-md-3 col-md-offset-2">
               <div class="form-group row">
-                <label>Codigo SAP:</label>
+                <label>Codigo SAP / CI:</label>
                 <div>
                   <input type="text" placeholder="Codigo SAP" class="form-control" v-model="formData.SAPId" @keyup.enter="findBP()" @change="ResetForm()">
                 </div>
@@ -71,17 +71,22 @@
         },
         action: false,
         url2: '/CivilbyBranch/0',
-        propsToSearch: ['Id', 'FullName', 'Category', 'SAPId', 'NIT'],
+        propsToSearch: ['Id', 'FullName', 'Abr', 'Category', 'SAPId', 'NIT'],
         tableColumns: [
           {
             prop: 'Id',
             label: '#',
-            minWidth: 50
+            minWidth: 25
+          },
+          {
+            prop: 'Abr',
+            label: 'Regional',
+            minWidth: 25
           },
           {
             prop: 'SAPId',
             label: 'SAPId',
-            minWidth: 100
+            minWidth: 50
           },
           {
             prop: 'FullName',

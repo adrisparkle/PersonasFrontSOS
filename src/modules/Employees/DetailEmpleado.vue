@@ -13,7 +13,7 @@
       </div>
 
       <div class="col-lg-12 col-md-12" v-if="action !== 'SEARCH'">
-        <BottomMenu v-if="loaded" :person="person" :action="action" :ContractId="contractDetail" :contract-ids="ContractIds" v-on:refresh="ref"></BottomMenu>
+        <BottomMenu v-if="loaded" :person="person" :action="action" :ContractId="contractDetail" :contract-ids="ContractIds" :Positions="Positions.values" v-on:refresh="ref"></BottomMenu>
       </div>
     </template>
   </div>
@@ -54,6 +54,9 @@
         loadBottomMenu: false,
         person: null,
         contractDetail: 0,
+        Positions: {
+          values: []
+        },
         ContractIds: []
       }
     },
@@ -77,6 +80,14 @@
           .then(response => {
             this.person = response.data
             this.loaded = true
+          })
+          .catch(error => console.log(error))
+      },
+      GetPositions () {
+        axios.get('positions/')
+          .then(response => {
+            this.Positions.values = response.data
+            console.log(this.Positions.values)
           })
           .catch(error => console.log(error))
       },
@@ -117,6 +128,7 @@
     },
     mounted () {
       this.init()
+      this.GetPositions()
     }
   }
 </script>
