@@ -66,7 +66,10 @@ import Civil from 'src/modules/Civil'
 import ContratosCiviles from 'src/modules/ContratosCiviles'
 import ContratosCivilesHistory from 'src/modules/ContratosCiviles/ContratosCivilesHistory'
 import ContratosCivilesAprobacion from 'src/modules/ContratosCiviles/ContratosCivilesAprobacion'
-
+// Asesorías de Docentes
+import Asesoria from 'src/modules/AsesoriaDocente/index'
+import RegistroTutoria from 'src/modules/AsesoriaDocente/ABM/RegistroTutorias'
+import AprobacionTutoria from 'src/modules/AsesoriaDocente/AprobacionTutorias'
 // import store from '../store'
 Vue.use(VueRouter)
 
@@ -264,6 +267,21 @@ let Menu = {
       path: '/ContratosCivilesAprobacion',
       name: 'Aprobación',
       component: ContratosCivilesAprobacion
+    },
+    {
+      path: '/AsesoriaDocente',
+      name: 'Historial de Tutorias',
+      component: Asesoria
+    },
+    {
+      path: '/RegistroTutorias',
+      name: 'Registro de Tutorias',
+      component: RegistroTutoria
+    },
+    {
+      path: '/AprobacionTutorias',
+      name: 'Aprobacion de Tutorias',
+      component: AprobacionTutoria
     }
   ]
 }

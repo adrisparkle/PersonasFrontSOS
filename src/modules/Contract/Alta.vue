@@ -2,10 +2,7 @@
   <div>
     <DetailEmpleado v-if="redirectToPersonDetail" action="ALTA" :index="i"></DetailEmpleado>
     <template v-else>
-
       <template>
-
-
         <div class="panel panel-info">
           <div class="panel-heading">
             Datos de la Persona

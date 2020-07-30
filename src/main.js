@@ -2,7 +2,6 @@ import Vue from 'vue'
 import './pollyfills'
 import VueRouter from 'vue-router'
 import VueNotify from 'vue-notifyjs'
-import VeeValidate from 'vee-validate'
 import lang from 'element-ui/lib/locale/lang/en'
 import locale from 'element-ui/lib/locale'
 import App from './App.vue'
@@ -20,10 +19,13 @@ import router from '@/router'
 // vuex setup
 import store from './store/index.js'
 
-
 import './assets/sass/paper-dashboard.scss'
 import './assets/sass/element_variables.scss'
 import './assets/sass/demo.scss'
+
+// import Vee validate
+import VeeValidate from 'vee-validate'
+import VCalendar from 'v-calendar'
 
 // plugin setup
 Vue.use(VueRouter)
@@ -33,13 +35,15 @@ Vue.use(VueNotify)
 Vue.use(SideBar)
 Vue.use(VeeValidate)
 Vue.use(VueWorker)
+Vue.use(VCalendar)
 locale.use(lang)
 
-// Dev server
+// Prod server
 // axios.defaults.baseURL = 'http://172.16.0.187:8001/api'
 
-// Production server
-axios.defaults.baseURL = 'http://192.168.18.75:8002/api'
+// Dev server
+axios.defaults.baseURL = 'http://192.168.18.22:8003/api'
+// axios.defaults.baseURL = 'http://localhost:60749/api'
 
 axios.defaults.headers.common['id'] = localStorage.getItem('userId')
 axios.defaults.headers.common['token'] = localStorage.getItem('token')

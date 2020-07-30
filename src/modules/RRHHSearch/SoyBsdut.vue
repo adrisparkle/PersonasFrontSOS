@@ -1,0 +1,9 @@
+<template>
+  <div>
+    Gola
+  </div>
+</template>
+<script>
+</script>
+<style>
+</style>

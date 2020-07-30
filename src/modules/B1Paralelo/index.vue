@@ -40,17 +40,12 @@
           {
             prop: 'U_Materia',
             label: 'Materia',
-            minWidth: 200
+            minWidth: 220
           },
           {
             prop: 'U_Paralelo',
             label: 'Paralelo',
-            minWidth: 100
-          },
-          {
-            prop: 'U_EstadoParalelo',
-            label: 'Estado',
-            minWidth: 100
+            minWidth: 70
           },
           {
             prop: 'U_NivelParalelo',

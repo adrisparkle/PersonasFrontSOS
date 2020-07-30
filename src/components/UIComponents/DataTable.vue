@@ -3,7 +3,7 @@
       <div class="card-header">
       </div>
       <div class="card-content row">
-        <div class="col-sm-5">
+        <div class="col-sm-4">
           <el-select
             class="select-default"
             v-model="pagination.perPage"
@@ -17,7 +17,7 @@
             </el-option>
           </el-select>
         </div>
-        <div class="col-sm-7">
+        <div class="col-sm-8">
           <div class="pull-right">
             <div class="row">
               <div class="col-sm-2">
@@ -25,7 +25,7 @@
                   Buscar
                 </label>
               </div>
-              <div class="col-sm-8">
+              <div class="col-sm-6">
                 <input type="search" class="form-control input-sm" placeholder="Criterio de busqueda" v-model="searchQuery" aria-controls="datatables">
               </div>
               <div class="col-sm-2">
@@ -34,6 +34,14 @@
                     <i class="fa fa-file-excel fa-lg" style=""></i>
                   </a>
                 </el-tooltip>
+              </div>
+              <div class="col-sm-2">
+                <el-tooltip class="item" effect="dark" content="Exportar en formato PDF" placement="top-start">
+                  <a class="btn btn-icon btn-danger pull-right btn-fill" @click="exportPDF()">
+                    <i class="fa fa-file-pdf fa-lg" style=""></i>
+                  </a>
+                </el-tooltip>
+              </div>
               </div>
             </div>
           </div>
@@ -51,7 +59,7 @@
                              :label="column.label">
             </el-table-column>
             <el-table-column v-if="actions"
-              :min-width="80"
+              :min-width="60"
               fixed="right"
               label="Actions">
               <template slot-scope="props">
@@ -71,7 +79,7 @@
                         :total="total">
           </p-pagination>
         </div>
-      </div>
+  </div>
   </div>
 </template>
 <script>
@@ -79,6 +87,8 @@
   import {Table, TableColumn, Select, Option} from 'element-ui'
   import PPagination from 'src/components/UIComponents/Pagination.vue'
   import { mapState } from 'vuex'
+  import jsPDF from 'jspdf'
+  import 'jspdf-autotable'
 
   Vue.use(Table)
   Vue.use(TableColumn)
@@ -179,6 +189,66 @@
       }
     },
     methods: {
+      getPDFBody () {
+        // este metodo convierte un array de objetos en un array de arrays, necesario para el reporte PDF
+        var pdf = []
+        var data = this.dataResult
+
+        for (let i = 0; i < data.length; i++) {
+          pdf.push(Object.values(data[i]))
+        }
+        // recorrer el array de arrays y eliminar el primer elemento de cada array interno, es el Id y viene por defecto
+        for (let i = 0; i < pdf.length; i++) {
+          // remueve primer elemento del subArray
+          pdf[i].splice(0, 1)
+        }
+        return pdf
+      },
+      exportPDF () {
+        const doc = new jsPDF('landscape')
+        // Armando la cabecera para el reporte
+        var img = new Image()
+        img.src = './../static/img/logo_ucb3.png'
+        doc.addImage(img, 'png', 14, 10, 20, 29)
+        doc.setFontSize(18)
+        doc.setFontStyle('bold')
+        doc.text('Universidad Católica Boliviana "San Pablo" ', 145, 25, null, null, 'center')
+        // El nombre de la ruta actual
+        doc.text(this.$route.name, 145, 35, null, null, 'center')
+        // Para controlar donde comienza el reporte en el eje Y
+        let y = 54
+        // El cuerpo del header y de la tabla
+        var body = this.getPDFBody()
+        var header = Object.keys(this.queriedData[0])
+        // el primer elemento es el Id, por eso se remueve
+        header.splice(0, 1)
+        // controla el tamaño de la fuente basado en el numero de columnas
+        var fontSize = 10
+        if (header.length >= 10) {
+          fontSize = 8
+        }
+        if (header.length >= 12) {
+          fontSize = 6
+        }
+        if (header.length >= 14) {
+          fontSize = 4.5
+        }
+        doc.autoTable({
+          startY: y,
+          head: [header],
+          body: body,
+          theme: 'grid',
+          // tableWidth: 'wrap',
+          styles: { fontSize: fontSize },
+          headStyles: {
+            fillColor: [4, 134, 230],
+            fontSize: fontSize
+          },
+          columnStyles: { text: { cellWidth: 'auto' } }
+        })
+
+        doc.save('export.pdf')
+      },
       exportExcel () {
         this.downloadCSV()
       },

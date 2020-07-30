@@ -35,7 +35,7 @@
           {
             prop: 'DependencyCod',
             label: 'Cod. Dependencia',
-            minWidth: 60
+            minWidth: 45
           },
           {
             prop: 'Dependency',

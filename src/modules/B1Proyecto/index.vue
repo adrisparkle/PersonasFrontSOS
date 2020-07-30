@@ -25,7 +25,7 @@
           {
             prop: 'PrjName',
             label: 'Nombre  ',
-            minWidth: 120
+            minWidth: 150
           },
           {
             prop: 'ValidFrom',
@@ -40,17 +40,17 @@
           {
             prop: 'U_ModalidadProy',
             label: 'Modalidad',
-            minWidth: 50
+            minWidth: 35
           },
           {
             prop: 'U_Sucursal',
             label: 'Sucursal',
-            minWidth: 50
+            minWidth: 35
           },
           {
             prop: 'U_Tipo',
             label: 'Tipo',
-            minWidth: 50
+            minWidth: 35
           }
         ],
         pagination: {
