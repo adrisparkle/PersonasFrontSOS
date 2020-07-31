@@ -419,7 +419,6 @@
         }
         axios.get('DocentesList')
           .then(response => {
-            var vm = this
             response.data.forEach(function (element) {
               // Se envío el BP como CUNI para que solo llegara un valor en el value, que se asignará después a teacherCUNI o teacherBP dependiendo de su origen
               teachers.push({value: element.CUNI, text: element.FullName, TipoPago: element.TipoPago, Categoria: element.Categoria})
@@ -578,7 +577,6 @@
         }
       },
       dependiente: function () {
-        let boolean
         if (this.dependiente) {
           if (!this.or) {
             this.tutoria.Origen = 'DEPEN'

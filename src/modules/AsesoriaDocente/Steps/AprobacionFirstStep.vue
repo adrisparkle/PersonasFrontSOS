@@ -50,7 +50,6 @@
 </template>
 <script>
   import Datepicker from 'vuejs-datepicker'
-  import {en, es} from 'vuejs-datepicker/dist/locale'
   import EditTutoria from '../ABM/RegistroTutorias'
   import axios from 'axios'
   import swal from 'sweetalert2'

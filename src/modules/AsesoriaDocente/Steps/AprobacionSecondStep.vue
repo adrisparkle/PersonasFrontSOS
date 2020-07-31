@@ -84,7 +84,6 @@
   import axios from 'axios'
   import { ModelSelect } from 'vue-search-select'
   import swal from 'sweetalert2'
-  import {mapFields} from 'vee-validate'
   import Info from '../Report'
 
   export default {
