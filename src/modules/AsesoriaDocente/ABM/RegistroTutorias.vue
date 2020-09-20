@@ -220,7 +220,8 @@
           {value: 'LPZ-A', text: 'LPZ-A', pricing: 54.75},
           {value: 'LPZ-B', text: 'LPZ-B', pricing: 51.03},
           {value: 'LPZ-C', text: 'LPZ-C', pricing: 46.78},
-          {value: 'CBB-A', text: 'CBB-A', pricing: 10}
+          {value: 'CBB-A', text: 'CBB-A', pricing: 10},
+          {value: 'TJA-U', text: 'TJA-U', pricing: 10}
         ],
         tutoria: {
           Id: null,
@@ -508,6 +509,7 @@
       },
       // Actualización de datos
       put () {
+        console.log('AsesoriaDocente/' + this.tutoriaId, this.tutoria)
         axios.put('AsesoriaDocente/' + this.tutoriaId, this.tutoria)
           .then(response => {
             this.successMessage()

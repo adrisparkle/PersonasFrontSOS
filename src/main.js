@@ -42,7 +42,10 @@ locale.use(lang)
 // axios.defaults.baseURL = 'http://172.16.0.187:8001/api'
 
 // Dev server
-axios.defaults.baseURL = 'http://localhost:8001/api'
+
+
+// DIego IP
+axios.defaults.baseURL = 'http://192.168.18.22:8003/api'
 // axios.defaults.baseURL = 'http://localhost:60749/api'
 
 axios.defaults.headers.common['id'] = localStorage.getItem('userId')

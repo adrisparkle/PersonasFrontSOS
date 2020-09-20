@@ -11,17 +11,19 @@
                        subtitle="Seleccionar a las personas para ser procesadas"
                        @on-change="handleValidation"
           >
-            <tab-content title="Validación Otras Regionales"
+            <tab-content title="Validación Dependientes"
                          icon="fa fa-user-check">
-              <FirstStep v-if="actualTab == 0" v-bind:estado="'REGISTRADO'" v-bind:origen="'OR'" v-bind:tipo="'otras regionales'"></FirstStep>
+              <!--<FirstStep v-if="actualTab == 0" v-bind:estado="'REGISTRADO'" v-bind:origen="'OR'" v-bind:tipo="'otras regionales'"></FirstStep>-->
+              <FirstStep v-if="actualTab == 0" v-bind:estado="'REGISTRADO'" v-bind:origen="'DEP'" v-bind:tipo="'dependientes'"></FirstStep>
             </tab-content>
             <tab-content title="Validación Independientes"
                          icon="fa fa-user-check">
               <FirstStep v-if="actualTab == 1" v-bind:estado="'REGISTRADO'" v-bind:origen="'INDEP'" v-bind:tipo="'independientes'"></FirstStep>
             </tab-content>
-            <tab-content title="Validación Dependientes"
+            <tab-content title="Validación Otras Regionales"
                          icon="fa fa-user-check">
-              <FirstStep v-if="actualTab == 2" v-bind:estado="'REGISTRADO'" v-bind:origen="'DEP'" v-bind:tipo="'dependientes'"></FirstStep>
+              <FirstStep v-if="actualTab == 2" v-bind:estado="'REGISTRADO'" v-bind:origen="'OR'" v-bind:tipo="'otras regionales'"></FirstStep>
+              <!--<FirstStep v-if="actualTab == 2" v-bind:estado="'REGISTRADO'" v-bind:origen="'DEP'" v-bind:tipo="'dependientes'"></FirstStep>-->
             </tab-content>
             <tab-content title="Aprobación"
                          icon="fa fa-university">
