@@ -5,23 +5,25 @@
         <div class="card card-wizard" id="wizardCard">
           <form-wizard
                        shape="tab"
-                       title="Aprobación de Tutorias"
+                       title="Aprobación de Lote Pregrado"
                        error-color="#D32F2F"
                        color="#FFA000"
-                       subtitle="Seleccionar a las personas para ser procesadas"
+                       subtitle="Seleccionar el tipo de vinculación"
                        @on-change="handleValidation"
           >
-            <tab-content title="Validación Otras Regionales"
+            <tab-content title="Validación Dependientes"
                          icon="fa fa-user-check">
-              <FirstStep v-if="actualTab == 0" v-bind:estado="'REGISTRADO'" v-bind:origen="'OR'" v-bind:tipo="'otras regionales'"></FirstStep>
+              <!--<FirstStep v-if="actualTab == 0" v-bind:estado="'REGISTRADO'" v-bind:origen="'OR'" v-bind:tipo="'otras regionales'"></FirstStep>-->
+              <FirstStep v-if="actualTab == 0" v-bind:estado="'REGISTRADO'" v-bind:origen="'DEP'" v-bind:tipo="'dependientes'"></FirstStep>
             </tab-content>
             <tab-content title="Validación Independientes"
                          icon="fa fa-user-check">
               <FirstStep v-if="actualTab == 1" v-bind:estado="'REGISTRADO'" v-bind:origen="'INDEP'" v-bind:tipo="'independientes'"></FirstStep>
             </tab-content>
-            <tab-content title="Validación Dependientes"
+            <tab-content title="Validación Otras Regionales"
                          icon="fa fa-user-check">
-              <FirstStep v-if="actualTab == 2" v-bind:estado="'REGISTRADO'" v-bind:origen="'DEP'" v-bind:tipo="'dependientes'"></FirstStep>
+              <FirstStep v-if="actualTab == 2" v-bind:estado="'REGISTRADO'" v-bind:origen="'OR'" v-bind:tipo="'otras regionales'"></FirstStep>
+              <!--<FirstStep v-if="actualTab == 2" v-bind:estado="'REGISTRADO'" v-bind:origen="'DEP'" v-bind:tipo="'dependientes'"></FirstStep>-->
             </tab-content>
             <tab-content title="Aprobación"
                          icon="fa fa-university">
@@ -30,7 +32,7 @@
 
             <button slot="prev" class="btn btn-info btn-fill btn-wd btn-back">Atras</button>
             <button slot="next" style="background-color: rgb(255,160,0); border-color: rgb(255,160,0)" class="btn btn-fill btn-wd btn-next">Siguiente</button>
-            <button slot="finish" class="btn btn-warning btn-fill btn-wd">Finalizar</button>
+            <button slot="finish" class="btn btn-warning btn-fill btn-wd" @click="volverAHistorial">Finalizar</button>
           </form-wizard>
         </div>
       </div>
@@ -43,7 +45,7 @@
   import 'vue-form-wizard/dist/vue-form-wizard.min.css'
   import FirstStep from './Steps/AprobacionFirstStep'
   import SecondStepAll from './Steps/AprobacionSecondStep'
-
+  import router from '../../router'
   export default {
     components: {
       FormWizard,
@@ -65,6 +67,10 @@
       // actualiza al tab actual
       handleValidation: function (oldTab, nextTab) {
         this.actualTab = nextTab
+      },
+      volverAHistorial: function () {
+        router.push('../' +
+          'AsesoriaDocente')
       }
     }
   }

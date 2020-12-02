@@ -35,6 +35,7 @@
           </h5>
         </div>
       </div>
+      <font size="1">*Correspondiente a última asignación</font>
     </div>
   </div>
 </template>
@@ -65,11 +66,11 @@
           return [
             {
               title: this.person.StartDatestr,
-              subTitle: 'Desde'
+              subTitle: 'Desde*'
             },
             {
               title: this.person.EndDatestr,
-              subTitle: 'Hasta'
+              subTitle: 'Hasta*'
             }
           ]
         }

@@ -18,7 +18,13 @@
             </span>
           </button>
           <br>
-
+          <button  type="button" class="btn btn-wd btn-fill btn-info" style="margin: 0 auto" @click="exportPDF">
+            <span class="btn-label">
+                <i class="fa fa-file-excel" ></i>
+                   Descargar Detalle PDF
+            </span>
+          </button>
+          <br>
           <button v-if="!inprogress" type="submit" class="btn btn-wd btn-fill btn-danger" style="margin: 5px auto" @click="cancel">
               <span v-if="this.$store.state.civ.uploadedFiles.state==='ESPERANDO APROBACION'" class="btn-label">
                   <i class="fa fa-exclamation-triangle" ></i>
@@ -58,6 +64,7 @@
                                 :format="format" :language="es"
                                 placeholder="Fecha Registro Contable"
                                 v-model="date"
+                                :use-utc="true"
                                 :required=true
                                 style="margin-left: auto;margin-right: auto">
                     </datepicker></div>
@@ -76,7 +83,6 @@
           </template>
         </div>
       </div>
-
     </div>
   </div>
 </template>
@@ -87,6 +93,8 @@
   import Datepicker from 'vuejs-datepicker'
   import {es} from 'vuejs-datepicker/dist/locale'
   import router from 'src/router/index'
+  import jsPDF from 'jspdf'
+  import 'jspdf-autotable'
 
   export default {
     props: {
@@ -104,6 +112,7 @@
       return {
         es: es,
         format: 'dd-MMM-yyyy',
+        formattedDate: '',
         date: null,
         is_error: false,
         timer: null,
@@ -113,6 +122,9 @@
         inprogress: false,
         rowCount: 0,
         rowsUploaded: 0,
+        tableData: [],
+        body: [],
+        recordsD: '',
         checked: false,
         url: '/ServContract/GetDetail/' + this.$store.state.civ.uploadedFiles.id
       }
@@ -141,8 +153,119 @@
           })
           .catch(error => console.log(error))
       },
+      loadTotalDetalleBody () {
+        // Cargar el cuerpo, es decir datos por carrera
+        console.log('Cuerpo PDF docente')
+        let rec = this.recordsD
+        console.log('Rec' + rec)
+        axios.get('/ServContract/getdistributionPDF/' + this.$store.state.civ.uploadedFiles.id,
+          {
+            headers: {
+              'token': localStorage.getItem('token')
+            }
+          }
+        ).then(response => {
+          this.body = response.data
+          console.log('Cuerpo PDF docente' + response.data.Id)
+        })
+          .catch(error => console.log(error))
+      },
+      // Metodo para generar el reporte
+      dataResult () {
+        let result = this.body
+          .filter((row) => {
+            let isIncluded = true
+            let all = ''
+            for (let key of this.propsToSearch) {
+              let rowValue = (row[key] == null ? '' : row[key]).toString()
+              rowValue = rowValue.toUpperCase().replace(' ', '')
+              all += rowValue
+            }
+            let separateStr = this.searchQuery.toUpperCase().split(' ')
+            separateStr.forEach(function (word) {
+              if (all.includes && !all.includes(word)) {
+                isIncluded = false
+              }
+            })
+            return isIncluded
+          })
+        return result
+      },
+      getPDFBody () {
+        // este metodo convierte un array de objetos en un array de arrays, necesario para el reporte PDF
+        var pdf = []
+        var data = this.body
+
+        for (let i = 0; i < data.length; i++) {
+          pdf.push(Object.values(data[i]))
+        }
+        // recorrer el array de arrays y eliminar el primer elemento de cada array interno, es el Id y viene por defecto
+        for (let i = 0; i < pdf.length; i++) {
+          // remueve primer elemento del subArray
+          pdf[i].splice(0, 1)
+        }
+        return pdf
+      },
+      exportPDF () {
+        const doc = new jsPDF('landscape')
+        // Armando la cabecera para el reporte
+        var img = new Image()
+        img.src = './../static/img/logo_ucb3.png'
+        doc.addImage(img, 'png', 14, 10, 20, 29)
+        doc.setFontSize(8)
+        doc.text('Fecha:' + this.formattedDate, 280, 10, null, null, 'right')
+        doc.text('Fuente: SARAI', 280, 15, null, null, 'right')
+        doc.setFontStyle('bold')
+        doc.setFontSize(18)
+        doc.text('Universidad Católica Boliviana "San Pablo" ', 145, 25, null, null, 'center')
+        // El nombre de la ruta actual
+        doc.setFontSize(18)
+        doc.text('Total Detalle', 145, 35, null, null, 'center')
+        // Para controlar donde comienza el reporte en el eje Y
+        let y = 54
+        // El cuerpo del header y de la tabla
+        var body = this.getPDFBody()
+        var header = Object.keys(this.body[0])
+        // el primer elemento es el Id, por eso se remueve
+        header.splice(0, 1)
+        // controla el tamaño de la fuente basado en el numero de columnas
+        var fontSize = 10
+        if (header.length >= 10) {
+          fontSize = 8
+        }
+        if (header.length >= 12) {
+          fontSize = 6
+        }
+        if (header.length >= 14) {
+          fontSize = 4.5
+        }
+        doc.autoTable({
+          startY: y,
+          head: [header],
+          body: body,
+          theme: 'grid',
+          // tableWidth: 'wrap',
+          styles: { fontSize: fontSize },
+          headStyles: {
+            fillColor: [4, 134, 230],
+            fontSize: fontSize
+          },
+          columnStyles: { text: { cellWidth: 'auto' } }
+        })
+
+        doc.save('export.pdf')
+      },
       ShowDate () {
         alert(this.date.toLocaleString())
+      },
+      date_function () {
+        this.formattedDate = this.convert()
+      },
+      convert () {
+        let date = new Date()
+        let mnth = ('0' + (date.getMonth() + 1)).slice(-2)
+        let day = ('0' + date.getDate()).slice(-2)
+        return [day, mnth, date.getFullYear()].join('-')
       },
       SAPVoucher () {
         if (this.date !== null) {
@@ -263,6 +386,10 @@
           })
         }
       }
+    },
+    created () {
+      this.loadTotalDetalleBody()
+      this.date_function()
     }
   }
 

@@ -173,19 +173,29 @@
             minWidth: 75
           },
           {
+            prop: 'Cod',
+            label: 'Codigo',
+            minWidth: 75
+          },
+          {
             prop: 'Name',
             label: 'Nombre',
             minWidth: 290
           },
           {
-            prop: 'Cod',
-            label: 'Codigo',
+            prop: 'ParentCod',
+            label: 'Codigo Padre',
             minWidth: 75
           },
           {
             prop: 'Parent',
             label: 'Padre',
             minWidth: 300
+          },
+          {
+            prop: 'OUCod',
+            label: 'Codigo UO',
+            minWidth: 75
           },
           {
             prop: 'OrganizationalUnit',

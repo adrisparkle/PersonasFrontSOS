@@ -3,7 +3,7 @@
     <br>
     <button v-if="action==='BAJA'" class="btn btn-danger pull-right" @click="$emit('Remove','ALL')">Baja</button>
     <br>
-    <data-tables v-bind="{url, propsToSearch, tableColumns,pagination,actions: hasActions}">
+    <data-tables v-bind="{url, propsToSearch, tableColumns,pagination,actions: hasActions,tipoExcel: 'esp'}">
       <template slot="buttons" slot-scope="props">
         <el-tooltip v-if="action==='MODIFY'" class="item" effect="dark" content="Modificar" placement="top-start">
           <a class="btn btn-simple btn-xs btn-icon btn-info" @click="$emit('Modify',props.queriedData[props.index].Id)"><i class="fa fa-edit"></i></a>
@@ -40,40 +40,47 @@
     data () {
       return {
         url: '/people/Contracts/' + this.personId,
-        propsToSearch: ['CUNI', 'Document', 'FirstSurName', 'SecondSurName', 'MariedSurName', 'Names'],
+        propsToSearch: ['Id', 'Cod', 'Dependency', 'Positions'],
         tableColumns: [
           {
             prop: 'Id',
+            field: 'Id',
             label: '#',
             minWidth: 80
           },
           {
             prop: 'Cod',
+            field: 'Cod',
             label: 'Cod.',
             minWidth: 80
           },
           {
             prop: 'Dependency',
+            field: 'Dependency',
             label: 'Dependencia',
             minWidth: 200
           },
           {
             prop: 'Positions',
-            label: 'Cargo',
+            field: 'Positions',
+            label: 'Posición',
             minWidth: 150
           },
           {
             prop: 'StartDatestr',
+            field: 'StartDatestr',
             label: 'Desde',
             minWidth: 120
           },
           {
             prop: 'EndDatestr',
+            field: 'EndDatestr',
             label: 'Hasta',
             minWidth: 120
           },
           {
             prop: 'Branches',
+            field: 'Branches',
             label: 'Regional',
             minWidth: 120
           }

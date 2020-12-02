@@ -4,7 +4,7 @@
       <PersonCard  v-if="loaded" :person="person"></PersonCard>
     </div>
     <div class="col-lg-9 col-md-9 col-sm-12">
-      <edit-person v-if="loaded" :person="person"></edit-person>
+      <edit-person v-if="loaded" :index="index"></edit-person>
     </div>
 
   </div>

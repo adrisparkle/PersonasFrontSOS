@@ -81,6 +81,7 @@
                               placeholder="Fecha Registro Contable"
                               v-model="date"
                               :required=true
+                              :use-utc="true"
                               style="margin-left: auto;margin-right: auto">
                   </datepicker></div>
 
@@ -258,11 +259,20 @@
           })
           .catch(error => console.log(error))
       },
+      convert (str) {
+        let date = new Date(str)
+        let mnth = ('0' + (date.getMonth() + 1)).slice(-2)
+        let day = ('0' + date.getDate()).slice(-2)
+        return [date.getFullYear(), mnth, day].join('-')
+      },
       SAPVoucher () {
+        /* var moment = require('moment') */
         if (this.date !== null) {
           this.inprogress = true
           this.getRows()
           this.initloader()
+          /* this.date = moment(this.date).format('YYYY-MM-DD') */
+          console.log('fecha' + this.date)
           axios.post('/payroll/GetSAPResume/' + this.$store.state.dist.uploadedFiles.id,
             {
               date: this.date

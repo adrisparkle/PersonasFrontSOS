@@ -1,8 +1,8 @@
 <template>
   <div style="background-color: floralwhite" class="col-lg-12 col-md-3 col-sm-12">
-    <template>
-      <h2 style="text-align: center; margin: 20px;">Consultas Individuales Dependientes</h2>
-    </template>
+   <!-- <template>
+      <h3 style="text-align: center; margin: 20px;">Consultas Individuales Dependientes</h3>
+    </template>-->
     <div class="row" v-if="actions!=='LIST'">
       <button type="button" class="btn btn-lg btn-fill btn-warning pull-right" style="background-color: gold" @click="Cancel()">
             <span class="btn-label ">
@@ -29,21 +29,21 @@
       </div>
       <template v-if="url==='/BusquedaIndividualActivo/'">
       <template>
-        <h3 style="text-align: center;">Consultas Personal Activo</h3>
-        <h5 style="text-align: center;">Se muestra personal con contrato vigente en la actualidad</h5>
+        <h3 style="text-align: center;">Consulta Inidividual - Personal Dependiente</h3>
+        <h5 style="text-align: center;">Despliega personal con vinculación activa a la fecha</h5>
       </template>
       <div class="container col-md-12">
         <template>
           <div class="row">
             <div class="card">
               <template v-if="actions==='LIST'">
-                <data-tables v-bind="{url, propsToSearch, tableColumns,pagination,searchQueryProp: query}">
+                <data-tables v-bind="{url, propsToSearch, tableColumns,pagination,searchQueryProp: query, tipoExcel}">
                   <template slot="buttons" slot-scope="props">
                     <el-tooltip class="item" effect="dark" :content="ButtonMessage1" placement="top-start">
                       <a class="btn btn-simple btn-xs btn-icon btn-info" @click="DetailContract(props.queriedData[props.index].Id)"><i class="ti-bag" style=""></i></a>
                     </el-tooltip><br>
                     <el-tooltip class="item" effect="dark" :content="ButtonMessage2" placement="top-start">
-                      <a class="btn btn-simple btn-xs btn-icon btn-info" @click="DetailPerson(props.queriedData[props.index].Id)"><i class="fa fa-user-tie" style=""></i></a>
+                      <a class="btn btn-simple btn-xs btn-icon btn-info" @click="DetailPerson(props.queriedData[props.index].Id, 'ContractId')"><i class="fa fa-user-tie" style=""></i></a>
                     </el-tooltip>
                     <el-tooltip class="item" effect="dark" content="Descargar Ficha" placement="top-start">
                       <a class="btn btn-simple btn-xs btn-icon btn-info" @click="getPersonCard(props.queriedData[props.index].Id, 'ContractId')">
@@ -60,18 +60,18 @@
     </template>
       <template v-if="url==='/BusquedaIndividualHistorico/'">
       <template>
-        <h3 style="text-align: center;">Consultas Personal Historico</h3>
-        <h5 style="text-align: center;">Se muestra personal que tuvo o tiene contrato con la Universidad</h5>
+        <h3 style="text-align: center;">Consulta Individual - Personal Dependiente Historico</h3>
+        <h5 style="text-align: center;">Despliega personal que tiene o tuvo vinculación con la Universidad</h5>
       </template>
       <div class="row">
         <div class="col-md-12 card" v-if="actions==='LIST'">
-          <data-tables :url="url" :propsToSearch="propsToSearch" :tableColumns="tableColumns" :pagination="pagination">
+          <data-tables :url="url" :propsToSearch="propsToSearch" :tableColumns="tableColumns" :pagination="pagination" :tipoExcel="tipoExcel">
             <template slot="buttons" slot-scope="props">
               <el-tooltip class="item" effect="dark" :content="ButtonMessage1" placement="top-start">
                 <a class="btn btn-simple btn-xs btn-icon btn-info" @click="DetailContract(props.queriedData[props.index].Id)"><i class="ti-bag" style=""></i></a>
               </el-tooltip><br>
               <el-tooltip class="item" effect="dark" :content="ButtonMessage2" placement="top-start">
-                <a class="btn btn-simple btn-xs btn-icon btn-info" @click="DetailPerson(props.queriedData[props.index].Id)"><i class="fa fa-user-tie" style=""></i></a>
+                <a class="btn btn-simple btn-xs btn-icon btn-info" @click="DetailPerson(props.queriedData[props.index].Id, 'ContractId')"><i class="fa fa-user-tie" style=""></i></a>
               </el-tooltip>
               <el-tooltip class="item" effect="dark" content="Descargar Ficha" placement="top-start">
                 <a class="btn btn-simple btn-xs btn-icon btn-info" @click="getPersonCard(props.queriedData[props.index].Id, 'ContractId')">
@@ -154,45 +154,53 @@
         fuente: '',
         actions: 'LIST',
         url: '/BusquedaIndividualActivo/',
+        tipoExcel: 'esp',
         propsToSearch: ['FullName', 'CUNI', 'Document', 'Dependency', 'Branches', 'Positions', 'Linkage'],
         tableColumns: [
           {
             prop: 'CUNI',
+            field: 'CUNI',
             label: 'CUNI',
             minWidth: 110
           },
           {
-            prop: 'Document',
+            prop: 'Documento',
+            field: 'Documento',
             label: 'Documento',
             minWidth: 100
           },
           {
-            prop: 'FullName',
+            prop: 'Nombre',
+            field: 'Nombre',
             label: 'Nombre Completo',
             minWidth: 250
           },
           {
-            prop: 'Positions',
-            label: 'Cargo',
+            prop: 'Posicion',
+            field: 'Posicion',
+            label: 'Posición',
             minWidth: 110
           },
           {
-            prop: 'Linkage',
-            label: 'Vinculacion',
+            prop: 'Vinculacion',
+            field: 'Vinculacion',
+            label: 'Vinculación',
             minWidth: 110
           },
           {
-            prop: 'Dependency',
+            prop: 'Dependencia',
             label: 'Dependencia',
             minWidth: 200
           },
           {
-            prop: 'Branches',
+            prop: 'Regional',
+            field: 'Regional',
             label: 'Regional',
             minWidth: 80
           },
           {
             prop: 'Status',
+            field: 'Status',
             label: 'Estado',
             minWidth: 80
           }
@@ -211,12 +219,13 @@
         this.i = index
         this.actions = 'MODIFY'
       },
-      DetailPerson (index) {
+      DetailPerson (index, sour) {
         this.fakeLoad()
         this.i = index
-        console.log('Detail person: ' + index)
+        this.fuente = sour
         this.actions = 'DETAILPERSON'
         this.action = 'DATOSPERSONA'
+        console.log('Si funciona' + this.i + '/' + this.fuente)
       },
       DetailContract (index) {
         this.fakeLoad()

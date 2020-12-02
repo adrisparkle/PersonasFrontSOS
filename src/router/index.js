@@ -255,37 +255,37 @@ let Menu = {
     },
     {
       path: '/Civil',
-      name: 'Crear personal Civil',
+      name: 'Habilitar personas',
       component: Civil
     },
     {
       path: '/ContratosCiviles',
-      name: 'Contratos Civiles',
+      name: 'Registro Lotes de pago',
       component: ContratosCiviles
     },
     {
       path: '/ContratosCivilesProcesos',
-      name: 'Historial',
+      name: 'Historial de Procesos',
       component: ContratosCivilesHistory
     },
     {
       path: '/ContratosCivilesAprobacion',
-      name: 'Aprobación',
+      name: 'Aprobación de Lotes',
       component: ContratosCivilesAprobacion
     },
     {
       path: '/AsesoriaDocente',
-      name: 'Historial de Tutorias',
+      name: 'Historial Pregrado',
       component: Asesoria
     },
     {
       path: '/RegistroTutorias',
-      name: 'Registro de Tutorias',
+      name: 'Registro Pregrado',
       component: RegistroTutoria
     },
     {
       path: '/AprobacionTutorias',
-      name: 'Aprobacion de Tutorias',
+      name: 'Aprobación de lote Pregrado',
       component: AprobacionTutoria
     },
     {

@@ -3,7 +3,7 @@
     <!--Lista de todas las tutorias, recibe todos los parámetros para el datatable-->
     <div class="col-md-12 card" v-if="actions==='LIST'">
       <div class="col-md-12 padding-0">
-        <data-tables v-bind="{url, propsToSearch, tableColumns,pagination}">
+        <data-tables v-bind="{url, propsToSearch, tableColumns,pagination, fuentePDF: 'ISAAC', tipoExcel: 'esp'}">
           <template slot="buttons" slot-scope="props">
             <!--Botones para modificar o hacer otras acciones-->
             <el-tooltip class="item" effect="dark" content="Historial del docente" placement="top-start">
@@ -60,43 +60,51 @@
         tableColumns: [
           {
             prop: 'Acta',
+            field: 'Acta',
             label: 'Acta',
             minWidth: 25
           },
           {
             prop: 'Carrera',
+            field: 'Carrera',
             label: 'Carrera',
             minWidth: 25
           },
           {
             prop: 'Profesor',
+            field: 'Profesor',
             label: 'Profesor',
             minWidth: 90
           },
           {
             prop: 'Estudiante',
+            field: 'Estudiante',
             label: 'Estudiante',
             minWidth: 90
           },
           {
-            prop: 'Tarea',
-            label: 'Tarea',
-            minWidth: 15
-          },
-          {
-            prop: 'MesLiteral',
-            label: 'Mes',
-            minWidth: 15
-          },
-          {
             prop: 'Origen',
+            field: 'Origen',
             label: 'Origen',
             minWidth: 20
           },
           {
+            prop: 'Tarea',
+            field: 'Tarea',
+            label: 'Tarea',
+            minWidth: 15
+          },
+          {
             prop: 'Gestion',
+            field: 'Gestion',
             label: 'Gestion',
             minWidth: 20
+          },
+          {
+            prop: 'MesLiteral',
+            field: 'MesLiteral',
+            label: 'Mes',
+            minWidth: 15
           }
         ],
         pagination: {

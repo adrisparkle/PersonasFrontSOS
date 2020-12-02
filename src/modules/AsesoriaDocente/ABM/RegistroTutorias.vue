@@ -5,14 +5,14 @@
       <div class="row">
         <div class="form-group col-md-6">
           <label>Carrera</label>
-            <div>
-              <model-select class="select-info"
-                            v-bind:class="{fixI : action==='PUT'}"
-                            :options="careers"
-                            v-model="tutoria.Carrera"
-                            placeholder="Seleccione una carrera">
-              </model-select>
-            </div>
+          <div>
+            <model-select class="select-info"
+                          v-bind:class="{fixI : action==='PUT'}"
+                          :options="careers"
+                          v-model="tutoria.Carrera"
+                          placeholder="Seleccione una carrera">
+            </model-select>
+          </div>
         </div>
       </div>
       <!--Del Profesor-->
@@ -25,7 +25,7 @@
                         v-model="teacherIdentifier"
                         placeholder="Seleccionar docente"
                         :onchange="actualCat()"
-                        >
+          >
           </model-select>
         </div>
         <div class="form-group col-md-2">
@@ -42,7 +42,7 @@
           <input type="checkbox" class="form-control" v-model="dependiente" @click="filterTeachers()">
         </div>
         <div class="form-group col-md-2">
-          <label >OR?</label>
+          <label >Otra Regional?</label>
           <input type="checkbox" class="form-control" v-model="or">
         </div>
         <div class="form-group col-md-2">
@@ -51,7 +51,7 @@
         </div>
       </div>
       <!--Modalidad-->
-        <div class="row">
+      <div class="row">
         <div class="form-group col-md-3">
           <label>Modalidad</label>
           <div>
@@ -79,7 +79,7 @@
       <div class="row">
         <div class="form-group col-md-6">
           <label >Nombre del Alumno</label>
-            <input type="text" placeholder="Nombre del estudiante" style="text-transform: uppercase;" class="form-control textBox" v-model="tutoria.StudentFullName">
+          <input type="text" placeholder="Apellidos y nombres del estudiante" style="text-transform: uppercase;" class="form-control textBox" v-model="tutoria.StudentFullName">
           <small v-if="formError.Student.active" class="form-text text-muted text-danger">{{formError.Student.message}}</small>
         </div>
         <div class="form-group col-md-2">
@@ -124,7 +124,7 @@
       <div class="row">
         <div class="form-group col-md-2">
           <label >Costo Hora</label>
-            <input type="text" placeholder="C/H" class="form-control" v-model="tutoria.MontoHora" readonly>
+          <input type="text" placeholder="C/H" class="form-control" v-model="tutoria.MontoHora" readonly>
         </div>
         <div class="form-group col-md-2">
           <label >Horas</label>
@@ -220,7 +220,9 @@
           {value: 'LPZ-A', text: 'LPZ-A', pricing: 54.75},
           {value: 'LPZ-B', text: 'LPZ-B', pricing: 51.03},
           {value: 'LPZ-C', text: 'LPZ-C', pricing: 46.78},
-          {value: 'CBB-A', text: 'CBB-A', pricing: 10}
+          {value: 'CBB-A', text: 'CBB-A', pricing: 10},
+          {value: 'TJA-U', text: 'TJA-U', pricing: 10},
+          {value: 'EPC-U', text: 'EPC-U', pricing: 10}
         ],
         tutoria: {
           Id: null,
@@ -274,6 +276,7 @@
           // Cuando es independiente se calculan nuevos tipos de descuentos que no aplican para los independientes
           this.tutoria.IUE = (this.totalBruto * (this.IUE / 100))
           this.tutoria.IT = (this.totalBruto * (this.IT / 100))
+          this.tutoria.Deduccion = this.tutoria.IUE + this.tutoria.IT
           this.tutoria.TotalNeto = (this.totalBruto - this.tutoria.IUE - this.tutoria.IT).toFixed(2)
           return (this.totalBruto - this.tutoria.IUE - this.tutoria.IT).toFixed(2)
         }
@@ -328,16 +331,20 @@
           if (this.dependiente && this.teacherArray[i]['value'] === this.teacherIdentifier) {
             this.tutoria.TeacherBP = ''
             this.tutoria.TeacherCUNI = this.teacherArray[i]['value']
-            this.tutoria.TeacherFullName = this.teacherArray[i]['text']
+            this.tutoria.TeacherFullName = this.teacherArray[i]['name']
             this.tutoria.Categoría = this.teacherArray[i]['Categoria']
             // Aquí asignamos el precio según la categoría
             this.categoryChange(this.tutoria.Categoría)
           }
           if (!this.dependiente && this.teacherArray[i]['value'] === this.teacherIdentifier) {
+            console.log(this.teacherArray[i]['value'])
             this.tutoria.TeacherCUNI = ''
             this.tutoria.TeacherBP = this.teacherArray[i]['value']
-            this.tutoria.TeacherFullName = this.teacherArray[i]['text']
+            this.tutoria.TeacherFullName = this.teacherArray[i]['name']
             this.tutoria.Categoría = this.teacherArray[i]['Categoria']
+            console.log('INDEPENDEITNEs')
+            console.log(this.tutoria.TeacherBP)
+            console.log(this.tutoria.TeacherFullName)
             this.categoryChange(this.tutoria.Categoría)
           }
         }
@@ -353,6 +360,12 @@
         this.tutoria.MontoHora = x
       },
       // ----------------------------------------Cargar datos desde BD----------------------------------------
+      fakeLoad () {
+        this.$store.commit('crud/loadSetter', true)
+        setTimeout(() => {
+          this.$store.commit('crud/loadSetter', false)
+        }, 500)
+      },
       // Usamos esta función en el PUT, para cargar los datos actuales del registro
       loadTutoria: function () {
         axios.get('AsesoriaDocente/' + this.tutoriaId)
@@ -363,7 +376,9 @@
               // para mostrar al docente del registro
               console.log('CUNI is loaded')
               this.teacherIdentifier = this.tutoria.TeacherCUNI
-              if (this.tutoria.Origen.localeCompare('OR')) {
+              console.log('aqui businees partner. ' + this.teacherIdentifier + '=' + this.tutoria.TeacherCUNI)
+              console.log('DEPEN' + this.teacherIdentifier)
+              if (this.tutoria.Origen === 'OR') {
                 console.log('OR is set to true')
                 this.or = true
               }
@@ -371,6 +386,9 @@
               this.Deduccion = ((100 * this.tutoria.Deduccion) / this.tutoria.TotalBruto).toFixed(2)
             } else if (this.tutoria.Origen === 'INDEP') {
               this.teacherIdentifier = this.tutoria.TeacherBP
+              console.log('aqui businees partner. ' + this.teacherIdentifier + '=' + this.tutoria.TeacherBP)
+              console.log('INDEP' + this.tutoria.TeacherFullName)
+              console.log('INDEP' + this.teacherIdentifier)
               this.dependiente = false
               // para igualar costos
               this.IUE = ((100 * this.tutoria.IUE) / this.tutoria.TotalBruto).toFixed(2)
@@ -421,11 +439,13 @@
           .then(response => {
             response.data.forEach(function (element) {
               // Se envío el BP como CUNI para que solo llegara un valor en el value, que se asignará después a teacherCUNI o teacherBP dependiendo de su origen
-              teachers.push({value: element.CUNI, text: element.FullName, TipoPago: element.TipoPago, Categoria: element.Categoria})
+              teachers.push({value: element.CUNI, text: element.CUNI + '-' + element.FullName, name: element.FullName, TipoPago: element.TipoPago, Categoria: element.Categoria})
+             // console.log('Terachers' + element.CUNI + '-' + element.FullName)
               // Creamos un array con los docentes dependientes
               if (element.TipoPago === selectedOrigin) {
                 console.log('This is the update action: ' + selectedOrigin)
-                firstTeachers.push({value: element.CUNI, text: element.FullName, TipoPago: element.TipoPago, Categoria: element.Categoria})
+                firstTeachers.push({value: element.CUNI, text: element.CUNI + '-' + element.FullName, name: element.FullName, TipoPago: element.TipoPago, Categoria: element.Categoria})
+                // console.log('FirstTeachers' + element.CUNI + '-' + element.FullName)
               }
             })
             console.log('el array de los profesores es:')
@@ -457,8 +477,10 @@
       // Envío de datos
       send () {
         if (!this.valid() && this.action === 'POST') {
+          console.log('Algo si entrá al POST')
           this.post()
         } else if (!this.valid() && this.action === 'PUT') {
+          console.log('Algo si entrá al PUT')
           this.put()
         } else {
           console.log('something was printed:' + this.action + ' ' + this.valid())
@@ -499,15 +521,18 @@
       post () {
         axios.post('AsesoriaDocente', this.tutoria)
           .then(response => {
+            console.log('Tutoria aqui' + this.tutoria.TeacherFullName)
             this.successMessage()
             this.cleanScreen()
           })
           .catch(error => {
             this.errorMessage(error.response.data.Message)
+            console.log(error.response.data.Message)
           })
       },
       // Actualización de datos
       put () {
+        console.log('AsesoriaDocente/' + this.tutoriaId, this.tutoria)
         axios.put('AsesoriaDocente/' + this.tutoriaId, this.tutoria)
           .then(response => {
             this.successMessage()
@@ -584,7 +609,7 @@
         }
         if (!this.dependiente) {
           this.tutoria.Origen = 'INDEP'
-        // si no es dependiente no puede ser OR
+          // si no es dependiente no puede ser OR
           this.or = false
         }
         // borrar la categoría actual
@@ -600,6 +625,7 @@
     created () {
       if (this.action === 'PUT') {
         // Solo cargamos los datos de la tutoría cuando hay un PUT, sino cargamos todo menos eso
+        this.fakeLoad()
         this.loadTutoria()
         this.loadModalidades()
         this.loadTipoTarea()
@@ -624,5 +650,6 @@
   }
   .textBox {
     background-color: white;
+    text-transform: uppercase;
   }
 </style>

@@ -28,7 +28,23 @@
               <div class="col-sm-6">
                 <input type="search" class="form-control input-sm" placeholder="Criterio de busqueda" v-model="searchQuery" aria-controls="datatables">
               </div>
-              <div class="col-sm-2">
+              <div class="col-sm-2" v-if="tipoExcel==='esp'">
+                <el-tooltip
+                  content="Exportar en formato Excel"
+                  placement="top-start">
+                <vue-excel-xlsx
+                  :data="items"
+                  :columns="tableColumns"
+                  :filename="'Export'"
+                  :sheetname="'Hoja1'"
+                  class="bott"
+                ><a class="btn btn-icon btn-success pull-right btn-fill">
+                  <i class="fa fa-file-excel fa-lg" style=""></i>
+                </a>
+                </vue-excel-xlsx>
+                </el-tooltip>
+              </div>
+              <div class="col-sm-2" v-else>
                 <el-tooltip class="item" effect="dark" content="Exportar en formato Excel" placement="top-start">
                   <a class="btn btn-icon btn-success pull-right btn-fill" @click="exportExcel()">
                     <i class="fa fa-file-excel fa-lg" style=""></i>
@@ -59,7 +75,7 @@
                              :label="column.label">
             </el-table-column>
             <el-table-column v-if="actions"
-              :min-width="60"
+              :min-width="25"
               fixed="right"
               label="Actions">
               <template slot-scope="props">
@@ -80,7 +96,6 @@
           </p-pagination>
         </div>
   </div>
-  </div>
 </template>
 <script>
   import Vue from 'vue'
@@ -89,7 +104,7 @@
   import { mapState } from 'vuex'
   import jsPDF from 'jspdf'
   import 'jspdf-autotable'
-
+  import axios from 'axios'
   Vue.use(Table)
   Vue.use(TableColumn)
   Vue.use(Select)
@@ -181,14 +196,43 @@
       searchQueryProp: {
         type: String,
         default: ''
+      },
+      tipoExcel: {
+        type: String,
+        default: ''
+      },
+      tituloPDF: {
+        type: String,
+        default: ''
+      },
+      fuentePDF: {
+        type: String,
+        default: 'BASE DE DATOS NACIONAL PERSONAS'
+      },
+      sizeTitulo: {
+        type: Number,
+        default: 12
       }
     },
     data () {
       return {
-        searchQuery: ''
+        searchQuery: '',
+        formattedData: '',
+        items: [],
+        tipo: ''
       }
     },
     methods: {
+      hacer_excel () {
+        axios.get(this.url)
+          .then(response => {
+            this.items = response.data
+          })
+          .catch()
+        setTimeout(() => {
+          this.isLoading = false
+        }, 2000)
+      },
       getPDFBody () {
         // este metodo convierte un array de objetos en un array de arrays, necesario para el reporte PDF
         var pdf = []
@@ -210,11 +254,15 @@
         var img = new Image()
         img.src = './../static/img/logo_ucb3.png'
         doc.addImage(img, 'png', 14, 10, 20, 29)
-        doc.setFontSize(18)
+        doc.setFontSize(8)
+        doc.text('Fecha:' + this.formattedDate, 280, 10, null, null, 'right')
+        doc.text('Fuente: ' + this.fuentePDF, 280, 15, null, null, 'right')
         doc.setFontStyle('bold')
+        doc.setFontSize(18)
         doc.text('Universidad Católica Boliviana "San Pablo" ', 145, 25, null, null, 'center')
         // El nombre de la ruta actual
-        doc.text(this.$route.name, 145, 35, null, null, 'center')
+        doc.setFontSize(this.sizeTitulo)
+        doc.text(this.tituloPDF, 145, 35, null, null, 'center')
         // Para controlar donde comienza el reporte en el eje Y
         let y = 54
         // El cuerpo del header y de la tabla
@@ -248,6 +296,15 @@
         })
 
         doc.save('export.pdf')
+      },
+      date_function () {
+        this.formattedDate = this.convert()
+      },
+      convert () {
+        let date = new Date()
+        let mnth = ('0' + (date.getMonth() + 1)).slice(-2)
+        let day = ('0' + date.getDate()).slice(-2)
+        return [day, mnth, date.getFullYear()].join('-')
       },
       exportExcel () {
         this.downloadCSV()
@@ -316,8 +373,13 @@
       this.$store.commit('crud/formDataCleaner')
       this.$store.commit('crud/editSetter', false)
       this.searchQuery = this.searchQueryProp
+      this.date_function()
+      this.hacer_excel()
     }
   }
 </script>
 <style>
+  .bott{
+    border: none;
+  }
 </style>

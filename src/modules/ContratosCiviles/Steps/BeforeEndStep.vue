@@ -58,9 +58,14 @@
             minWidth: 60
           },
           {
-            prop: 'Memo',
-            label: 'Nombre Servicio',
-            minWidth: 150
+            prop: 'Credit',
+            label: 'Monto Bruto',
+            minWidth: 60
+          },
+          {
+            prop: 'Debit',
+            label: 'Monto a Pagar',
+            minWidth: 50
           },
           {
             prop: 'LineMemo',
@@ -68,14 +73,14 @@
             minWidth: 90
           },
           {
-            prop: 'AssignedAccount',
-            label: 'Cuenta Asignada',
-            minWidth: 70
+            prop: 'Memo',
+            label: 'Nombre Servicio',
+            minWidth: 150
           },
           {
-            prop: 'Debit',
-            label: 'Monto a Pagar',
-            minWidth: 50
+            prop: 'AssignedAccount',
+            label: 'Cuenta asignada',
+            minWidth: 70
           }
         ],
         actions: false,

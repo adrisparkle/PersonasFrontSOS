@@ -11,7 +11,7 @@
               <div class="form-group row">
                 <label>Codigo SAP / CI:</label>
                 <div>
-                  <input type="text" placeholder="Codigo SAP" class="form-control" v-model="formData.SAPId" @keyup.enter="findBP()" @change="ResetForm()">
+                  <input type="text" placeholder="Codigo SAP" class="form-control" style="text-transform: uppercase;" v-model="formData.SAPId" @keyup.enter="findBP()" @change="ResetForm() ">
                 </div>
               </div>
             </div>
@@ -40,7 +40,7 @@
             </div>
             <div class="col-md-7 col-md-offset-2">
               <div class="form-group row">
-                <button class="btn btn-fill btn-success btn-block" @click="send()" style="margin-top: 25px;">Crear como Personal Civil</button>
+                <button class="btn btn-fill btn-success btn-block" @click="send()" style="margin-top: 25px;">Habilitar como persona independiente</button>
               </div>
             </div>
 

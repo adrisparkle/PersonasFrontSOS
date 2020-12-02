@@ -9,8 +9,10 @@
     </button>
   </div>
     <div id="printMe" align="center" class="col-md-8 el-col-sm-offset-4 card" >
+      <div align="right"><p><font size="1px">Fecha: {{formattedDate}}</font></p></div>
+      <div align="right"><p><font size="1px">Fuente: BASE DE DATOS NACIONAL PERSONAS</font></p></div>
     <div class="row">
-    <h2>Ficha Empleado UCB</h2>
+    <h2>Tarjeta de Funcionario U.C.B.</h2>
     <h3>Datos Personales</h3>
     <div align="center"  v-for="peopleData in persons" :key="'item' + peopleData.id">
       <table style="border: 1px solid black;">
@@ -19,7 +21,7 @@
             {{peopleData.TipoDocumento}}</td>
           <td width="33%" colspan="2" style="border: 1px solid black; padding: 10px; margin: 10px"> <label>Numero Documento:</label>
             {{peopleData.Documento}}</td>
-          <td width="33%" colspan="1" style="border: 1px solid black; padding: 10px; margin: 10px"><template v-if="peopleData.TipoDocumento==='CI'">
+          <td width="33%" colspan="1" style="border: 1px solid black; padding: 10px; margin: 10px"><template v-if="peopleData.TipoDocumento==='CARNET DE IDENTIDAD'">
             <label>Expedido en:</label>
             {{peopleData.Ext}}
           </template></td>
@@ -35,9 +37,10 @@
             <label>Segundo Apellido:</label>
             {{peopleData.SegundoApellido}}
           </td>
-          <td colspan="2" style="border: 1px solid black; padding: 10px; margin: 10px">
+          <td colspan="2" style="border: 1px solid black; padding: 10px; margin: 10px"><template v-if="peopleData.Genero==='FEMENINO'">
               <label>Apellido Casada:</label>
               {{peopleData.ApellidoCasada}}
+          </template>
           </td>
         </tr>
         <tr style="border: 1px solid black;">
@@ -73,7 +76,7 @@
         <tr style="padding: 10px; margin: 10px;">
           <th style="padding: 10px; margin: 10px;">Regional</th>
           <th style="padding: 10px; margin: 10px;">Dependencia</th>
-          <th style="padding: 10px; margin: 10px;">Cargo</th>
+          <th style="padding: 10px; margin: 10px;">Posición</th>
           <th style="padding: 10px; margin: 10px;">Vinculación</th>
           <th style="padding: 10px; margin: 10px;">Dedicación</th>
           <th style="padding: 10px; margin: 10px;">Fecha inicio</th>
@@ -129,7 +132,9 @@
         loadBottomMenu: false,
         persons: [],
         contractDetail: 0,
-        ContractIds: []
+        ContractIds: [],
+        formattedDate: '',
+        CurrentDate: ''
       }
     },
     methods: {
@@ -150,16 +155,24 @@
             this.persons = response.data
           })
           .catch(error => console.log(error))
+      },
+      date_function () {
+        this.formattedDate = this.convert()
+      },
+      convert () {
+        let date = new Date()
+        let mnth = ('0' + (date.getMonth() + 1)).slice(-2)
+        let day = ('0' + date.getDate()).slice(-2)
+        return [day, mnth, date.getFullYear()].join('-')
       }
     },
-    /*
     mounted () {
-      this.init()
+      this.date_function()
     },
-    */
     created () {
       this.PersonData()
       this.GetContracts()
+      this.convert()
     }
   }
 </script>

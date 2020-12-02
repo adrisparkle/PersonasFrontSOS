@@ -52,25 +52,30 @@
           {
             prop: 'Id',
             label: '#',
-            minWidth: 25
+            minWidth: 25,
+            field: 'Id'
           },
           {
             prop: 'CUNI',
             label: 'CUNI',
-            minWidth: 50
+            minWidth: 50,
+            field: 'CUNI'
           },
           {
             prop: 'Document',
+            field: 'Document',
             label: 'Documento',
             minWidth: 50
           },
           {
             prop: 'FullName',
+            field: 'FullName',
             label: 'Nombre Completo',
             minWidth: 80
           },
           {
             prop: 'Status',
+            field: 'Status',
             label: 'Estado',
             minWidth: 80
           }

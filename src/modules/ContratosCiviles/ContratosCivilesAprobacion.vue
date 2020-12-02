@@ -134,6 +134,11 @@
           })
       },
       initWizard: function (id) {
+        console.log('FormData')
+        console.log(this.formData.Document)
+        console.log(this.formData.FullName)
+        console.log(this.formData.SAPId)
+        console.log(this.formData.NIT)
         axios.get('ServContract/' + id, this.formData)
           .then(response => {
             console.log(response.data.State)

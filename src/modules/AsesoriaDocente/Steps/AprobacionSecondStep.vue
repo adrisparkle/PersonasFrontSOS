@@ -2,17 +2,17 @@
   <div class="row">
     <!--Lista de todas las tutorias, recibe todos los parámetros para el datatable-->
     <template class="col-md-12 card" v-if="action==='LIST'">
-        <data-tables v-bind="{url, propsToSearch, tableColumns,pagination}">
+        <data-tables v-bind="{url, propsToSearch, tableColumns,pagination, fuentePDF: 'ISAAC', tipoExcel: 'esp'}">
         </data-tables>
       <div class="row">
         <div class="col-md-2 el-col-md-offset-6">
           <Info></Info>
         </div>
         <div class="col-md-3">
-          <button type="button" class="btn btn-info" @click="windowDateSALOMON">generar archivo PREGRADO</button>
+          <button type="button" class="btn btn-info" @click="windowDateSALOMON">Generar archivo PREGRADO SALOMÓN</button>
         </div>
         <div class="col-md-3">
-          <button class="btn btn-info" @click="windowDateSARAI">generar archivo CARRERA</button>
+          <button class="btn btn-info" @click="windowDateSARAI">Generar archivo CARRERA SARAI</button>
         </div>
       </div>
     </template>
@@ -111,41 +111,49 @@
         tableColumns: [
           {
             prop: 'Id',
+            field: 'Id',
             label: '#',
-            minWidth: 15
+            minWidth: 10
           },
           {
             prop: 'Carrera',
+            field: 'Carrera',
             label: 'Carrera',
-            minWidth: 25
+            minWidth: 20
           },
           {
             prop: 'TeacherFullName',
+            field: 'TeacherFullName',
             label: 'Profesor',
             minWidth: 80
           },
           {
             prop: 'TipoTarea',
+            field: 'TipoTarea',
             label: 'Tarea',
             minWidth: 20
           },
           {
             prop: 'StudentFullName',
+            field: 'StudentFullName',
             label: 'Estudiante',
             minWidth: 80
           },
           {
             prop: 'Modalidad',
+            field: 'Modalidad',
             label: 'Modalidad',
-            minWidth: 25
+            minWidth: 15
           },
           {
             prop: 'TotalBruto',
+            field: 'TotalBruto',
             label: 'TB',
             minWidth: 15
           },
           {
             prop: 'TotalNeto',
+            field: 'TotalNeto',
             label: 'TN',
             minWidth: 15
           }

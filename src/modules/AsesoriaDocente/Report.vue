@@ -6,7 +6,6 @@
   import axios from 'axios'
   import jsPDF from 'jspdf'
   import 'jspdf-autotable'
-
   export default {
     props: {
       origin: {
@@ -32,12 +31,24 @@
       }
     },
     methods: {
+      date_function () {
+        this.formattedDate = this.convert()
+      },
+      convert () {
+        let date = new Date()
+        let mnth = ('0' + (date.getMonth() + 1)).slice(-2)
+        let day = ('0' + date.getDate()).slice(-2)
+        return [day, mnth, date.getFullYear()].join('-')
+      },
       generatePDF () {
         // Para que sea largo
         let doc = new jsPDF('landscape')
         var img = new Image()
         img.src = './../static/img/logo_ucb3.png'
         doc.addImage(img, 'PNG', 14, 10, 20, 29)
+        doc.setFontSize(8)
+        doc.text('Fecha:' + this.formattedDate, 280, 10, null, null, 'right')
+        doc.text('Fuente: ISAAC', 280, 15, null, null, 'right')
         doc.setFontSize(18)
         doc.setFontStyle('bold')
         doc.text('Universidad Católica Boliviana "San Pablo" ', 85, 25)
@@ -75,7 +86,7 @@
           let tableBody = []
           for (var tableIndex = index; tableIndex < index + tableLength; tableIndex++) {
             // Crear un array de arrays con los elementos que correspondan
-            tableBody.push([files[tableIndex].Docente, files[tableIndex].Categ, files[tableIndex].Modal, files[tableIndex].Tarea, files[tableIndex].Alumno, files[tableIndex].Acta + ' ', (files[tableIndex].Fecha), files[tableIndex].Horas, files[tableIndex].Costo_Hora, files[tableIndex].Total_Bruto, files[tableIndex].Total_Neto, files[tableIndex].Observaciones])
+            tableBody.push([files[tableIndex].Docente, files[tableIndex].Categ, files[tableIndex].Modal, files[tableIndex].Tarea, files[tableIndex].Alumno, files[tableIndex].Acta + ' ', (files[tableIndex].Fecha), files[tableIndex].Horas, files[tableIndex].Costo_Hora, files[tableIndex].Total_Bruto, files[tableIndex].Deduccion, files[tableIndex].IUE, files[tableIndex].IT, files[tableIndex].Total_Neto, files[tableIndex].Observaciones])
           }
           // console.log('this is the body with results: ')
           // console.log(tableBody)
@@ -84,7 +95,7 @@
           // cargamos la tabla con el cuerpo para la carrera actual
           doc.autoTable({
             startY: doc.previousAutoTable.finalY,
-            head: [['Docente', 'Categ', 'Modal', 'Tarea', 'Alumno', 'Acta', 'Fecha', 'Horas', 'Costo Hora', 'Total Bruto', 'TotalNeto', 'Observaciones']],
+            head: [['Docente', 'Categ', 'Modal', 'Tarea', 'Alumno', 'Acta', 'Fecha', 'Horas', 'Costo Hora', 'Total Bruto', 'Dedu', 'IUE', 'IT', 'TotalNeto', 'Observaciones']],
             body: tableBody,
             theme: 'grid',
             styles: {cellPadding: 0.5, fontSize: 8, cellWidth: 'wrap', valign: 'middle'},
@@ -95,18 +106,21 @@
             // Las posiciones de los nombres y las observaciones se mantienen estáticas
             columnStyles: {
               text: {cellWidth: 'auto', valign: 'center'},
-              0: {cellWidth: 45},
+              0: {cellWidth: 40},
               1: {cellWidth: 10},
               2: {cellWidth: 10},
               3: {cellWidth: 10},
-              4: {cellWidth: 45},
-              5: {cellWidth: 20},
+              4: {cellWidth: 40},
+              5: {cellWidth: 15},
               6: {cellWidth: 20},
               7: {cellWidth: 10},
               8: {cellWidth: 15},
               9: {cellWidth: 15},
               10: {cellWidth: 15},
-              11: {cellWidth: 47.65}
+              11: {cellWidth: 15},
+              12: {cellWidth: 15},
+              13: {cellWidth: 15},
+              14: {cellWidth: 23.5}
             }
           })
           // -------------------------------------Tabla con totales por carrera-----------------------------------------
@@ -114,14 +128,14 @@
             return result.Carrera === careerName
           })
           let resultBody = []
-          resultBody.push([careerResults[0].Total_Bruto, careerResults[0].Total_Neto])
+          resultBody.push([careerResults[0].Total_Bruto, careerResults[0].Deduccion, careerResults[0].IUE, careerResults[0].IT, careerResults[0].Total_Neto])
           doc.autoTable({
             startY: doc.previousAutoTable.finalY,
             // para que aparezca debajo de los montos
-            margin: {left: 203.5},
+            margin: {left: 184.2},
             theme: 'grid',
             body: resultBody,
-            columnStyles: {0: {cellWidth: 15.6}, 1: {cellWidth: 15.4}},
+            columnStyles: {0: {cellWidth: 14.7}, 1: {cellWidth: 15.3}, 2: {cellWidth: 14.8}, 3: {cellWidth: 15}, 4: {cellWidth: 15}},
             styles: {cellPadding: 0.5, fontSize: 8, fillColor: [222, 222, 222], fontStyle: 'bold'}
           })
           // Reset del cuerpo para otras carreras y sus resultados
@@ -135,8 +149,8 @@
           startY: y,
           theme: 'grid',
           body: this.finalResult,
-          margin: {left: 203.5},
-          columnStyles: {0: {cellWidth: 15.5}, 1: {cellWidth: 15.5}},
+          margin: {left: 184.2},
+          columnStyles: {0: {cellWidth: 14.7}, 1: {cellWidth: 15.3}, 2: {cellWidth: 14.8}, 3: {cellWidth: 15}, 4: {cellWidth: 15}},
           styles: {cellPadding: 0.5, fontSize: 8, fillColor: [222, 222, 222], fontStyle: 'bold'}
         })
         doc.setFontSize(8)
@@ -176,7 +190,7 @@
         axios.get('PDFReportBody?part=FinalResult;' + this.state + ';' + this.origin)
           .then(response => {
             response.data.forEach(function (element) {
-              final.push([element.Total_Bruto, element.Total_Neto])
+              final.push([element.Total_Bruto, element.Deduccion, element.IUE, element.IT, element.Total_Neto])
             })
           })
           .catch(error => console.log(error))
@@ -206,10 +220,10 @@
       this.loadAllTotals()
       this.loadBranchData()
       this.sayMyName()
+      this.date_function()
     }
   }
 </script>
 
 <style scoped>
-
 </style>

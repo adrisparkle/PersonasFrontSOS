@@ -11,7 +11,6 @@
               </div>
               <div class="panel-body">
                 <!--form @submit.prevent="create"-->
-
                   <div class="row">
                     <div class="form-group col-md-4">
                       <label>Tipo Documento</label>
@@ -298,7 +297,7 @@
         // this.formError.UseSecondSurName = this.isEmptyBlanckOrNull(this.formData.UseSecondSurName)
         // this.formError.UseMariedSurName = this.isEmptyBlanckOrNull(this.formData.UseMariedSurName)
         // this.formError.CUNI = this.isEmptyBlanckOrNull(this.formData.CUNI)
-        this.formError.file = this.isEmptyBlanckOrNull(this.file) && false
+        // this.formError.file = this.isEmptyBlanckOrNull(this.file) && false
         this.formError.TypeDocument = this.isEmptyBlanckOrNull(this.formData.TypeDocument)
         this.formError.Document = this.isEmptyBlanckOrNull(this.formData.Document)
         this.formError.Ext = this.isEmptyBlanckOrNull(this.formData.Ext) && this.formData.TypeDocument === 'CI'
@@ -309,10 +308,10 @@
         this.formError.BirthDate = this.isEmptyBlanckOrNull(this.formData.BirthDate)
         this.formError.Gender = this.isEmptyBlanckOrNull(this.formData.Gender)
         this.formError.Nationality = this.isEmptyBlanckOrNull(this.formData.Nationality)
-        this.formError.NUA = this.isEmptyBlanckOrNull(this.formData.NUA) && false
-        this.formError.AFP = this.isEmptyBlanckOrNull(this.formData.AFP)
+        // this.formError.NUA = this.isEmptyBlanckOrNull(this.formData.NUA) && false
+        // this.formError.AFP = this.isEmptyBlanckOrNull(this.formData.AFP)
         x = !(!x || this.formError.UseSecondSurName ||
-          this.formError.file ||
+          // this.formError.file ||
           this.formError.UseMariedSurName ||
           this.formError.CUNI ||
           this.formError.TypeDocument ||
@@ -324,9 +323,9 @@
           this.formError.MariedSurName ||
           this.formError.BirthDate ||
           this.formError.Gender ||
-          this.formError.Nationality ||
-          this.formError.NUA ||
-          this.formError.AFP)
+          this.formError.Nationality)
+         // this.formError.NUA ||
+          // this.formError.AFP)
         return x
       },
       send: function () {
@@ -334,6 +333,7 @@
         let entorno = this
         this.formData.UseMariedSurName = this.formData.UseMariedSurName ? 1 : 0
         this.formData.UseSecondSurName = this.formData.UseSecondSurName ? 1 : 0
+        console.log('Este es people:' + this.formData)
         if (this.valid()) {
           axios.post('/people', this.formData, {
             headers: {

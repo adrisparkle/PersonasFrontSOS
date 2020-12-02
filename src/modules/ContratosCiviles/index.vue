@@ -7,8 +7,8 @@
                        @on-complete="wizardComplete"
                        error-color="#D32F2F"
                        color="#FFA000"
-                       title="Asignacion de Centros de Responsabilidad"
-                       subtitle="siga los siguientes pasos">
+                       title="Actividades Académicas efectuadas por Independientes"
+                       subtitle="Asignación de Centros de Responsabilidad">
             <tab-content title="CONFIG"
                          :before-change="validateFirstStep"
                          icon="fa fa-cogs">

@@ -71,7 +71,7 @@
         axios.get('BusquedaGrupal/FiltrarDep/')
           .then(response => {
             response.data.forEach(function (element) {
-              aux.push({value: element.Id, text: element.Cod + '-' + element.Name + '-' + element.Branch, key: element.Cod + element.Id})
+              aux.push({value: element.Id, text: element.Cod + '-' + element.Branch + '-' + element.Name, key: element.Cod + element.Id})
             })
             this.DependenciaResponse = aux
           })
