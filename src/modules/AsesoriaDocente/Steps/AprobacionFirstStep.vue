@@ -4,7 +4,7 @@
 
     <!--Lista de todas las tutorias, recibe todos los parámetros para el datatable-->
     <template class="col-md-12 card" v-if="actions==='LIST'">
-      <data-tables v-bind="{url, propsToSearch, tableColumns,pagination, fuentePDF: 'ISAAC', tipoExcel: 'esp'}">
+      <data-tables v-bind="{url, propsToSearch, tableColumns,pagination, fuentePDF: 'ISAAC'}">
         <template slot="buttons" slot-scope="props">
           <!--Botones para modificar o hacer otras acciones-->
           <el-tooltip class="item" effect="dark" content="Editar" placement="top">

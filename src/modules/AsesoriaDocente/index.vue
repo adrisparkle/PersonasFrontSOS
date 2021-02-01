@@ -3,7 +3,7 @@
     <!--Lista de todas las tutorias, recibe todos los parámetros para el datatable-->
     <div class="col-md-12 card" v-if="actions==='LIST'">
       <div class="col-md-12 padding-0">
-        <data-tables v-bind="{url, propsToSearch, tableColumns,pagination, fuentePDF: 'ISAAC', tipoExcel: 'esp'}">
+        <data-tables v-bind="{url, propsToSearch, tableColumns,pagination, fuentePDF: 'ISAAC'}">
           <template slot="buttons" slot-scope="props">
             <!--Botones para modificar o hacer otras acciones-->
             <el-tooltip class="item" effect="dark" content="Historial del docente" placement="top-start">

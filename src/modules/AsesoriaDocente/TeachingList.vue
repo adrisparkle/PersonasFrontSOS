@@ -8,7 +8,7 @@
 
     <div class="row">
       <div class="col-md-12">
-        <data-tables v-bind="{url, propsToSearch, tableColumns,pagination,actions: hasActions, tituloPDF: 'Docente: ' + person.TeacherFullName, fuentePDF: 'ISAAC', sizeTitulo: 12, tipoExcel: 'esp'}">
+        <data-tables v-bind="{url, propsToSearch, tableColumns,pagination,actions: hasActions, tituloPDF: 'Docente: ' + person.TeacherFullName, fuentePDF: 'ISAAC', sizeTitulo: 12}">
           <template slot="buttons" slot-scope="props">
             <el-tooltip v-if="action==='MODIFY'" class="item" effect="dark" content="Modificar" placement="top-start">
               <a class="btn btn-simple btn-xs btn-icon btn-info" @click="$emit('Modify',props.queriedData[props.index].Id)"><i class="fa fa-edit"></i></a>

@@ -2,7 +2,7 @@
   <div class="row">
     <!--Lista de todas las tutorias, recibe todos los parámetros para el datatable-->
     <template class="col-md-12 card" v-if="action==='LIST'">
-        <data-tables v-bind="{url, propsToSearch, tableColumns,pagination, fuentePDF: 'ISAAC', tipoExcel: 'esp'}">
+        <data-tables v-bind="{url, propsToSearch, tableColumns,pagination, fuentePDF: 'ISAAC'}">
         </data-tables>
       <div class="row">
         <div class="col-md-2 el-col-md-offset-6">
