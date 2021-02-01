@@ -43,7 +43,7 @@
         </div>
         <div class="form-group col-md-2">
           <label >Otra Regional?</label>
-          <input type="checkbox" class="form-control" v-model="or" @click="ChangeButton()">
+          <input type="checkbox" class="form-control" v-model="or">
         </div>
         <div class="form-group col-md-2">
           <label >Por Hora?</label>
@@ -96,16 +96,6 @@
           <div class="form-group col-md-2">
             <label> Fecha </label>
             <div class="row">
-              <datepicker :typeable="false"
-                          :bootstrap-styling="true"
-                          :initialView="initialview"
-                          :format="format"
-                          :language="es"
-                          typeable
-                          placeholder="yyyy/mm/dd"
-                          v-model="tutoria.ActaFecha">
-              </datepicker>
-              <!--
               <v-date-picker
                 v-model="tutoria.ActaFecha"
                 locale="es"
@@ -114,7 +104,7 @@
                 style: "color:#A5A5A5;",
                 placeholder: "dd/mm/yyyy"
                 }'
-              />-->
+              />
             </div>
           </div>
         </div>
@@ -181,7 +171,6 @@
   import { ModelSelect } from 'vue-search-select'
   import {FormWizard, TabContent} from 'vue-form-wizard'
   import 'vue-form-wizard/dist/vue-form-wizard.min.css'
-  import {es} from 'vuejs-datepicker/dist/locale'
   export default {
     components: {
       ModelSelect,
@@ -208,11 +197,6 @@
     },
     data: function () {
       return {
-        es: es,
-        format: 'yyyy/MM/dd',
-        opendate: new Date(),
-        initialview: 'day',
-        but: false,
         IsFetching: true,
         totalBruto: 0,
         options: [],
@@ -352,14 +336,14 @@
             this.categoryChange(this.tutoria.Categoría)
           }
           if (!this.dependiente && this.teacherArray[i]['value'] === this.teacherIdentifier) {
-            // console.log(this.teacherArray[i]['value'])
+            console.log(this.teacherArray[i]['value'])
             this.tutoria.TeacherCUNI = ''
             this.tutoria.TeacherBP = this.teacherArray[i]['value']
             this.tutoria.TeacherFullName = this.teacherArray[i]['name']
             this.tutoria.Categoría = this.teacherArray[i]['Categoria']
-            // console.log('INDEPENDEITNEs')
-            // console.log(this.tutoria.TeacherBP)
-            // console.log(this.tutoria.TeacherFullName)
+            console.log('INDEPENDEITNEs')
+            console.log(this.tutoria.TeacherBP)
+            console.log(this.tutoria.TeacherFullName)
             this.categoryChange(this.tutoria.Categoría)
           }
         }
@@ -389,21 +373,21 @@
             // Dependiendo dl origen del docente se carga el CUNI o el BP
             if (this.tutoria.Origen === 'DEPEN' || this.tutoria.Origen === 'OR') {
               // para mostrar al docente del registro
-              // console.log('CUNI is loaded')
+              console.log('CUNI is loaded')
               this.teacherIdentifier = this.tutoria.TeacherCUNI
-              // console.log('aqui businees partner. ' + this.teacherIdentifier + '=' + this.tutoria.TeacherCUNI)
-              // console.log('DEPEN' + this.teacherIdentifier)
+              console.log('aqui businees partner. ' + this.teacherIdentifier + '=' + this.tutoria.TeacherCUNI)
+              console.log('DEPEN' + this.teacherIdentifier)
               if (this.tutoria.Origen === 'OR') {
-                // console.log('OR is set to true')
+                console.log('OR is set to true')
                 this.or = true
               }
               // para igualar costos, es necesario hacer un cálculo inverso porque nosotros guardamos monto pero desplegamos porcentaje
               this.Deduccion = ((100 * this.tutoria.Deduccion) / this.tutoria.TotalBruto).toFixed(2)
             } else if (this.tutoria.Origen === 'INDEP') {
               this.teacherIdentifier = this.tutoria.TeacherBP
-              // console.log('aqui businees partner. ' + this.teacherIdentifier + '=' + this.tutoria.TeacherBP)
-              // console.log('INDEP' + this.tutoria.TeacherFullName)
-              // console.log('INDEP' + this.teacherIdentifier)
+              console.log('aqui businees partner. ' + this.teacherIdentifier + '=' + this.tutoria.TeacherBP)
+              console.log('INDEP' + this.tutoria.TeacherFullName)
+              console.log('INDEP' + this.teacherIdentifier)
               this.dependiente = false
               // para igualar costos
               this.IUE = ((100 * this.tutoria.IUE) / this.tutoria.TotalBruto).toFixed(2)
@@ -419,16 +403,13 @@
               this.acta = false
             }
             // La fecha solo la tienen algunos registros, el cargado de la fecha será opcional
-            // if (this.tutoria.ActaFecha != null) {
-              // var actaYear = this.tutoria.ActaFecha.substring(0, 4)
-              // var actaMonth = this.tutoria.ActaFecha.substring(5, 7)
-              // var actaDay = this.tutoria.ActaFecha.substring(8, 10)
-              // var actaYear = tutoria.ActaFecha.getFullYear()
-              // var actaMonth = ('0' + (tutoria.ActaFecha.getMonth() + 1)).slice(-2)
-              // var actaDay = ('0' + tutoria.ActaFecha.getDate()).slice(-2)
-              // var date = new Date(actaYear, actaMonth, actaDay)
-              // this.tutoria.ActaFecha = tutoria.ActaFecha
-            // }
+            if (this.tutoria.ActaFecha != null) {
+              var actaYear = this.tutoria.ActaFecha.substring(0, 4)
+              var actaMonth = this.tutoria.ActaFecha.substring(5, 7)
+              var actaDay = this.tutoria.ActaFecha.substring(8, 10)
+              var date = new Date(actaYear, actaMonth - 1, actaDay)
+              this.tutoria.ActaFecha = date
+            }
             this.IsFetching = false
           })
           .catch(error => { console.log('el error es:' + error) })
@@ -444,78 +425,33 @@
           .catch(error => console.log(error))
         this.IsFetching = false
       },
-      convert (str) {
-        let date = new Date(str)
-        let mnth = ('0' + (date.getMonth() + 1)).slice(-2)
-        let day = ('0' + date.getDate()).slice(-2)
-        return [date.getFullYear(), mnth, day].join('-')
-      },
-      ChangeButton () {
-        if (this.but) {
-          this.but = false
-        }
-        if (!this.but) {
-          this.but = true
-        }
-        this.loadTeachers()
-      },
       loadTeachers () {
-        if (!this.but) {
-          let teachers = this.teachers
-          // Este array guarda la info de los profesores que se cargan la primera vez
-          let firstTeachers = this.teacherArray
-          let selectedOrigin = '1'
-          if (this.origin === 'INDEP') {
-            // console.log('This is the PUT action and the selected origin is:' + selectedOrigin)
-            selectedOrigin = '0'
-          }
-          axios.get('DocentesList')
-            .then(response => {
-              response.data.forEach(function (element) {
-                // Se envío el BP como CUNI para que solo llegara un valor en el value, que se asignará después a teacherCUNI o teacherBP dependiendo de su origen
-                teachers.push({value: element.CUNI, text: element.CUNI + '-' + element.FullName, name: element.FullName, TipoPago: element.TipoPago, Categoria: element.Categoria})
-                // console.log('Terachers' + element.CUNI + '-' + element.FullName)
-                // Creamos un array con los docentes dependientes
-                if (element.TipoPago === selectedOrigin) {
-                  // console.log('This is the update action: ' + selectedOrigin)
-                  firstTeachers.push({value: element.CUNI, text: element.CUNI + '-' + element.FullName, name: element.FullName, TipoPago: element.TipoPago, Categoria: element.Categoria})
-                  // console.log('FirstTeachers' + element.CUNI + '-' + element.FullName)
-                }
-              })
-              // console.log('el array de los profesores es:')
-              // console.log(firstTeachers)
-            })
-            .catch(error => console.log(error))
-          this.IsFetching = false
+        let teachers = this.teachers
+        // Este array guarda la info de los profesores que se cargan la primera vez
+        let firstTeachers = this.teacherArray
+        let selectedOrigin = '1'
+        if (this.origin === 'INDEP') {
+          console.log('This is the PUT action and the selected origin is:' + selectedOrigin)
+          selectedOrigin = '0'
         }
-        if (this.but) {
-          let teachers = this.teachers
-          // Este array guarda la info de los profesores que se cargan la primera vez
-          let firstTeachers = this.teacherArray
-          let selectedOrigin = '1'
-          if (this.origin === 'INDEP') {
-            // console.log('This is the PUT action and the selected origin is:' + selectedOrigin)
-            selectedOrigin = '0'
-          }
-          axios.get('DocentesListAll')
-            .then(response => {
-              response.data.forEach(function (element) {
-                // Se envío el BP como CUNI para que solo llegara un valor en el value, que se asignará después a teacherCUNI o teacherBP dependiendo de su origen
-                teachers.push({value: element.CUNI, text: element.CUNI + '-' + element.FullName, name: element.FullName, TipoPago: element.TipoPago, Categoria: element.Categoria})
-                // console.log('Terachers' + element.CUNI + '-' + element.FullName)
-                // Creamos un array con los docentes dependientes
-                if (element.TipoPago === selectedOrigin) {
-                  // console.log('This is the update action: ' + selectedOrigin)
-                  firstTeachers.push({value: element.CUNI, text: element.CUNI + '-' + element.FullName, name: element.FullName, TipoPago: element.TipoPago, Categoria: element.Categoria})
-                  // console.log('FirstTeachers' + element.CUNI + '-' + element.FullName)
-                }
-              })
-              // console.log('el array de los profesores es:')
-              // console.log(firstTeachers)
+        axios.get('DocentesList')
+          .then(response => {
+            response.data.forEach(function (element) {
+              // Se envío el BP como CUNI para que solo llegara un valor en el value, que se asignará después a teacherCUNI o teacherBP dependiendo de su origen
+              teachers.push({value: element.CUNI, text: element.CUNI + '-' + element.FullName, name: element.FullName, TipoPago: element.TipoPago, Categoria: element.Categoria})
+              // console.log('Terachers' + element.CUNI + '-' + element.FullName)
+              // Creamos un array con los docentes dependientes
+              if (element.TipoPago === selectedOrigin) {
+                console.log('This is the update action: ' + selectedOrigin)
+                firstTeachers.push({value: element.CUNI, text: element.CUNI + '-' + element.FullName, name: element.FullName, TipoPago: element.TipoPago, Categoria: element.Categoria})
+                // console.log('FirstTeachers' + element.CUNI + '-' + element.FullName)
+              }
             })
-            .catch(error => console.log(error))
-          this.IsFetching = false
-        }
+            console.log('el array de los profesores es:')
+            console.log(firstTeachers)
+          })
+          .catch(error => console.log(error))
+        this.IsFetching = false
       },
       loadModalidades () {
         let mods = this.modalidades
@@ -575,43 +511,13 @@
         this.tutoria.StudentFullName = ''
         // Variables del componente
         this.Deduccion = 0
-        this.IUE = 13
-        this.IT = 3
+        this.IUE = 0
+        this.IT = 0
         // Variables de control de errores
         this.formError.Acta.active = false
         this.formError.Student.active = false
       },
       post () {
-        /*
-        console.log('Aqui la info:')
-        console.log('DependencyCod' + this.tutoria.DependencyCod)
-        console.log('Observaciones' + this.tutoria.Observaciones)
-        console.log('MontoHora' + this.tutoria.MontoHora)
-        console.log('Horas' + this.tutoria.Horas)
-        console.log('Categoría' + this.tutoria.Categoría)
-        console.log('TotalBruto' + this.tutoria.TotalBruto)
-        console.log('TotalNeto' + this.tutoria.TotalNeto)
-        console.log('Acta' + this.tutoria.Acta)
-        console.log('ActaFecha' + this.tutoria.ActaFecha)
-        console.log('TeacherFullName' + this.tutoria.TeacherFullName)
-        console.log('TeacherBP' + this.tutoria.TeacherBP)
-        console.log('TeacherCUNI' + this.tutoria.TeacherCUNI)
-        console.log('ModalidadId' + this.tutoria.ModalidadId)
-        console.log('TipoTareaId' + this.tutoria.TipoTareaId)
-        console.log('StudentFullName' + this.tutoria.StudentFullName)
-        console.log('Id' + this.tutoria.Id)
-        console.log('Carrera' + this.tutoria.Carrera)
-        console.log('BranchesId' + this.tutoria.BranchesId)
-        console.log('Mes' + this.tutoria.Mes)
-        console.log('Gestion' + this.tutoria.Gestion)
-        console.log('Valid' + this.tutoria.Valid)
-        console.log('Origen' + this.tutoria.Origen)
-        console.log('Ignore' + this.tutoria.Ignore)
-        // Variables del componente
-        console.log('Deduccion' + this.tutoria.Deduccion)
-        console.log('IUE' + this.tutoria.IUE)
-        console.log('IT' + this.tutoria.IT)
-        */
         axios.post('AsesoriaDocente', this.tutoria)
           .then(response => {
             console.log('Tutoria aqui' + this.tutoria.TeacherFullName)
@@ -625,7 +531,7 @@
       },
       // Actualización de datos
       put () {
-        // console.log('AsesoriaDocente/' + this.tutoriaId, this.tutoria)
+        console.log('AsesoriaDocente/' + this.tutoriaId, this.tutoria)
         axios.put('AsesoriaDocente/' + this.tutoriaId, this.tutoria)
           .then(response => {
             this.successMessage()
